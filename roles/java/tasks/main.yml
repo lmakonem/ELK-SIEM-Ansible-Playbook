@@ -2,8 +2,6 @@
 #
 # Installing openJDK 8
 - name: Install openjdk java
-  hosts: all
-
   roles:
     - role: lean_delivery.java
       transport: repositories
