@@ -1,14 +1,180 @@
 ---
-#
-# Playbook to install the ELK stack + Beats
-#
 - hosts: elkservers
-  remote_user: ubuntu
-  become: yes
-  become_user: root
-  roles:
-  - { role: java }
-  - { role: elasticsearch }
-  - { role: kibana }
-  - { role: metricbeat }
+  gather_facts: yes
 
+  pre_tasks:
+    - name: update apt cache if needed
+      become: yes
+      apt:
+        update_cache=yes
+        cache_valid_time=3600
+
+  tasks:
+    - name: Install Java Runtime Environment
+      become: yes
+      apt:
+       name: default-jre
+       state: present
+
+- hosts: elastic
+  gather_facts: no
+
+  tasks:
+    - name: Download Elastic Deb Package
+      get_url:
+        url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb
+        dest: /tmp
+
+    - name: Install Elastic Deb Package
+      become: yes
+      apt:
+        deb: /tmp/elasticsearch-7.6.2-amd64.deb
+
+    - name: Update Elastic Config (IP Address to 0.0.0.0)
+      become: yes
+      lineinfile:
+        destfile: /etc/elasticsearch/elasticsearch.yml
+        regexp: 'network.host'
+        line: 'network.host: 0.0.0.0'
+
+    - name: Updating Elastic Config (Port Number)
+      become: yes
+      lineinfile:
+        destfile: /etc/elasticsearch/elasticsearch.yml
+        regexp: 'http.port'
+        line: 'http.port: 9200'
+
+    - name: Updating Elastic Config (Node Name)
+      become: yes
+      lineinfile:
+        destfile: /etc/elasticsearch/elasticsearch.yml
+        regexp: '#node.name: node-1'
+        line: 'node.name: node-1'
+
+    - name: Updating Elastic Config (Cluster Initial Master Nodes)
+      become: yes
+      lineinfile:
+        destfile: /etc/elasticsearch/elasticsearch.yml
+        line: 'cluster.initial_master_nodes: ["node-1"]'
+
+    - name: Start ElasticSearch Service
+      become: yes
+      service:
+        name: elasticsearch
+        state: started
+
+- hosts: kibana
+  gather_facts: no
+
+  tasks:
+    - name: Download Kibana Deb Package
+      get_url:
+        url: https://artifacts.elastic.co/downloads/kibana/kibana-7.6.2-amd64.deb
+        dest: /tmp
+
+    - name: Install Kibana Deb Package
+      become: yes
+      apt:
+        deb: /tmp/kibana-7.6.2-amd64.deb
+
+    - name: Update Kibana Config (IP Address)
+      become: yes
+      lineinfile:
+        destfile: /etc/kibana/kibana.yml
+        regexp: 'server.host'
+        line: 'server.host: "0.0.0.0"'
+
+    - name: Update Kibana Config (Kibana URL)
+      become: yes
+      lineinfile:
+        destfile: /etc/kibana/kibana.yml
+        regexp: 'elasticsearch.hosts'
+        line: 'elasticsearch.hosts: ["http://192.168.5.71:9200"]'
+
+    - name: Start Kibana Service
+      become: yes
+      service:
+        name: kibana
+        state: started
+
+- hosts: logstash
+  gather_facts: no
+
+  tasks:
+    - name: Download Logstash Deb Package
+      get_url:
+        url: https://artifacts.elastic.co/downloads/logstash/logstash-7.6.2.deb
+        dest: /tmp
+
+    - name: Install Logstash Deb Package
+      become: yes
+      apt:
+        deb: /tmp/logstash-7.6.2.deb
+
+    - name: Create Logstash Pipeline File
+      become: yes
+      file:
+         path: /etc/logstash/conf.d/main.conf
+         state: touch
+
+    - name: Add Logstash Pipeline Configuration
+      become: yes
+      blockinfile:
+         path: /etc/logstash/conf.d/main.conf
+         marker: ""
+         block: |
+           input {
+             beats {
+               port => 5044
+             }
+           }
+           output {
+             elasticsearch { hosts => ["192.168.5.71:9200"]
+             }
+           }
+    - name: Download Filebeat Package
+      get_url:
+        url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.2-amd64.deb
+        dest: /tmp
+
+    - name: Install FileBeat Deb Package
+      become: yes
+      apt:
+        deb: /tmp/filebeat-7.6.2-amd64.deb
+
+    - name: Remove FileBeat YAML File
+      become: yes
+      file:
+        path: /etc/filebeat/filebeat.yml
+        state: absent
+
+    - name: Create New FileBeat YAML File
+      become: yes
+      file:
+         path: /etc/filebeat/filebeat.yml
+         state: touch
+
+    - name: Add FileBeat YAML Configuration
+      become: yes
+      blockinfile:
+         path: /etc/filebeat/filebeat.yml
+         marker: ""
+         block: |
+           filebeat.inputs:
+           - type: log
+             paths:
+              - /var/log/*.log
+           output.logstash:
+              hosts: ["localhost:5044"]
+
+    - name: Start Logstash Service
+      become: yes
+      service:
+        name: logstash
+        state: started
+
+    - name: Start FileBeat Service
+      become: yes
+      service:
+        name: filebeat
+        state: started
