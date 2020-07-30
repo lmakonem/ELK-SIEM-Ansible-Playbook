@@ -16,7 +16,7 @@
        name: default-jre
        state: present
 
-- hosts: elastic
+- hosts: elkservers
   gather_facts: no
 
   tasks:
@@ -63,7 +63,7 @@
         name: elasticsearch
         state: started
 
-- hosts: kibana
+- hosts: elkservers
   gather_facts: no
 
   tasks:
@@ -97,7 +97,7 @@
         name: kibana
         state: started
 
-- hosts: logstash
+- hosts: elkservers
   gather_facts: no
 
   tasks:
