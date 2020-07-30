@@ -14,9 +14,7 @@
 - name: Agree to oracle license
   debconf: name=oracle-java8-installer question=shared/accepted-oracle-license-v1-1 vtype=select value=true
 
-- name: Install Java 8
+- name: "Java 8 should be installed"
   apt:
-    name: oracle-java8-installer
-    state: present
-    update_cache: yes
-    force: yes
+    name: "oracle-java8-installer"
+    state: "present"
