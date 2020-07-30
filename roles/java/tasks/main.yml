@@ -3,6 +3,10 @@
 - name: set fact java_state to present
   set_fact: java_state="present"
 
+- name: set fact java_state to latest
+  set_fact: java_state="latest"
+  when: update_java == true
+
 - name: RedHat - Ensure Java is installed
   become: yes
   yum: name={{ java }} state={{java_state}}
