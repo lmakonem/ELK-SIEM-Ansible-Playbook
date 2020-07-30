@@ -1,0 +1,23 @@
+---
+#
+# Installing Java 8
+#
+
+# Add the Java repo
+
+- name: Add the Java PPA repo
+  apt_repository: 
+   repo: ppa:webupd8team/java
+
+# Accept Oracle license
+
+- name: Automatically accept the Oracle license 
+  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+  
+# Install Java 
+
+- name: Install Java 8
+  apt:
+   name: oracle-java8-installer
+   state: present
+   update_cache: yes
