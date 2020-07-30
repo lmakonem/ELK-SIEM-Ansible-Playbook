@@ -22,13 +22,13 @@
   tasks:
     - name: Download Elastic Deb Package
       get_url:
-        url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-amd64.deb
+        url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.8.1-amd64.deb
         dest: /tmp
 
     - name: Install Elastic Deb Package
       become: yes
       apt:
-        deb: /tmp/elasticsearch-7.6.2-amd64.deb
+        deb: /tmp/elasticsearch-7.8.1-amd64.deb
 
     - name: Update Elastic Config (IP Address to 0.0.0.0)
       become: yes
@@ -69,13 +69,13 @@
   tasks:
     - name: Download Kibana Deb Package
       get_url:
-        url: https://artifacts.elastic.co/downloads/kibana/kibana-7.6.2-amd64.deb
+        url: https://artifacts.elastic.co/downloads/kibana/kibana-7.8.1-amd64.deb
         dest: /tmp
 
     - name: Install Kibana Deb Package
       become: yes
       apt:
-        deb: /tmp/kibana-7.6.2-amd64.deb
+        deb: /tmp/kibana-7.8.1-amd64.deb
 
     - name: Update Kibana Config (IP Address)
       become: yes
@@ -103,13 +103,13 @@
   tasks:
     - name: Download Logstash Deb Package
       get_url:
-        url: https://artifacts.elastic.co/downloads/logstash/logstash-7.6.2.deb
+        url: https://artifacts.elastic.co/downloads/logstash/logstash-7.8.1.deb
         dest: /tmp
 
     - name: Install Logstash Deb Package
       become: yes
       apt:
-        deb: /tmp/logstash-7.6.2.deb
+        deb: /tmp/logstash-7.8.1.deb
 
     - name: Create Logstash Pipeline File
       become: yes
@@ -134,13 +134,13 @@
            }
     - name: Download Filebeat Package
       get_url:
-        url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.2-amd64.deb
+        url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.8.1-amd64.deb
         dest: /tmp
 
     - name: Install FileBeat Deb Package
       become: yes
       apt:
-        deb: /tmp/filebeat-7.6.2-amd64.deb
+        deb: /tmp/filebeat-7.8.1-amd64.deb
 
     - name: Remove FileBeat YAML File
       become: yes
