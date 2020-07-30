@@ -1,20 +1,23 @@
 ---
-  
-- name: Debian - Ensure Java is installed
-  become: yes
-  apt: name={{ java }} state={{java_state}}
-  when: ansible_os_family == 'Debian'
+#
+# Installing Java 8
+#
 
-- name: register open_jdk version
-  shell: java -version 2>&1 | grep OpenJDK
-  register: open_jdk
-  ignore_errors: yes
-  changed_when: false
-  check_mode: no
+# Add the Java repo
 
-#https://github.com/docker-library/openjdk/issues/19 - ensures tests pass due to java 8 broken certs
-- name: refresh the java ca-certificates
-  become: yes
-  command: /var/lib/dpkg/info/ca-certificates-java.postinst configure
-  when: ansible_distribution == 'Ubuntu' and open_jdk.rc == 0
-  changed_when: false
+- name: Add the Java PPA repo
+  apt_repository:
+   repo: ppa:webupd8team/java
+
+# Accept Oracle license
+
+- name: Automatically accept the Oracle license
+  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+
+# Install Java
+
+- name: Install Java 8
+  apt:
+   name: oracle-java8-installer
+   state: present
+   update_cache: yes
