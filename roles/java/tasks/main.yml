@@ -8,6 +8,7 @@
 - name: Add the Java PPA repo
   apt_repository:
    repo: ppa:webupd8team/java
+   update_cache: yes
 
 # Accept Oracle license
 
