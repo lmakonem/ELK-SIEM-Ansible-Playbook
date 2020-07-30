@@ -1,20 +1,9 @@
----
-# tasks file for java8
-- name: Install java 8 preresequesits
-  apt:
-    name: python3-software-properties
-    state: present
-
-- name: Add Java 8 repository
-  apt_repository:
-    repo: 'ppa:webupd8team/java'
-    state: present
-    update_cache: yes
-
-- name: Agree to oracle license
-  debconf: name=oracle-java8-installer question=shared/accepted-oracle-license-v1-1 vtype=select value=true
-
-- name: "Java 8 should be installed"
-  apt:
-    name: "oracle-java8-installer"
-    state: "present"
+- name: Install java
+    roles:
+      - role: lean_delivery.java
+          java_distribution: oracle_java
+          java_package: jre
+          java_major_version: 8
+          transport: s3
+          transport_s3_bucket: java-s3-bucket
+          transport_s3_path: /java/jre-8u181-linux-x64.tar.gz
