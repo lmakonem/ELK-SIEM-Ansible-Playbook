@@ -2,7 +2,7 @@
 # tasks file for java8
 - name: Install java 8 preresequesits
   apt:
-    name: python-software-properties
+    name: python3-software-properties
     state: present
 
 - name: Add Java 8 repository
@@ -19,4 +19,4 @@
     name: oracle-java8-installer
     state: present
     update_cache: yes
-    force: yes 
+    force: yes
