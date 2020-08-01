@@ -16,7 +16,7 @@ NB we will improve this playbook in the future to include roles and variables, f
 
 Install ansible on Centos 7 using install_ansible.sh
 
-1) Close this repo to your centos machine where you want to install Ansible
+1) Clone this repo to your centos machine where you want to install Ansible
 2) RUN cd ELK-SIEM-Ansible-playbook
 3) run sudo ./install_ansible.sh  ## This will install the latest version for ansible for you.
 
