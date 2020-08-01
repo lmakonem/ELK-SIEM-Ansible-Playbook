@@ -3,7 +3,9 @@ Ansible Playbook to install the ELK Stack. To use this playbook follow these ste
 
 Requirements:
 1) Ansible on a VM or docker container.
-2)Ubuntu VM for installing the ELK SIEM.
+
+2) Ubuntu VM for installing the ELK SIEM.
+
 For a sample lab deployment, see mine here( and follow the whole series where i show you how to deploy ELK SIEM lab for detection):
 https://www.youtube.com/watch?v=IwlV3wVX4xs&t=32s
 
