@@ -1,0 +1,9 @@
+# Module: netflow
+# Docs: https://www.elastic.co/guide/en/beats/filebeat/7.8/filebeat-module-netflow.html
+
+- module: netflow
+  log:
+    enabled: true
+    var:
+      netflow_host: 0.0.0.0
+      netflow_port: 2055
